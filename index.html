@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salty Doceria</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <style>
+        /* CONFIGURAÇÕES GERAIS */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fff0f0; 
+            color: #4A3B32; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* CONTAINER PRINCIPAL */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        /* IMAGEM DE PERFIL/LOGO */
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        /* TÍTULO COM A NOVA FONTE */
+        h1 { 
+            font-family: 'Pacifico', cursive; /* Aqui aplica a fonte de "Glacê" */
+            font-size: 38px; /* Aumentei um pouco para destacar a cursiva */
+            margin-bottom: 5px;
+            color: #d61c1c; /* Um vermelho levemente diferente para o título */
+            font-weight: normal;
+        }
+
+        p { color: #eb2525; margin-bottom: 30px; font-size: 14px; }
+
+        /* ESTILO DOS BOTÕES */
+        .link-btn {
+            display: block;
+            background-color: #fff;
+            color: #af1919;
+            text-decoration: none;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 30px; 
+            border: 1px solid #f82121;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* EFEITO AO PASSAR O MOUSE/TOCAR */
+        .link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            background-color: #FAF4EB;
+        }
+
+        /* BOTÃO DE DESTAQUE */
+        .highlight {
+            background-color: #fc1313; 
+            color: white;
+            border: none;
+        }
+        .highlight:hover { background-color: #cf6283; color: white; }
+
+        /* RODAPÉ */
+        footer {
+            margin-top: 20px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="logosalty.jpg" alt="Logo Salty" class="profile-img">
+        
+        <h1>Salty Doceria</h1>
+        <p>Bolos artesanais, doces finos e muito amor. 🍰</p>
+
+        <a href="https://wa.me/+5582994165240" class="link-btn highlight">
+            📲 Fazer Encomenda (WhatsApp)
+        </a>
+
+        <a href="#" class="link-btn">
+            🎂 Ver Cardápio Completo (PDF)
+        </a>
+
+        <a href="https://www.instagram.com/saltydoceria/?__pwa=1" class="link-btn">
+            📸 Siga no Instagram
+        </a>
+
+        <a href="https://maps.app.goo.gl/BMkzFQLu1YFLKGsw6" class="link-btn">
+            📍 Como Chegar (Maps)
+        </a>
+
+        <footer>
+            © 2025 Salty Doceria
+        </footer>
+    </div>
+
+</body>
+</html>
