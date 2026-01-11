@@ -42,10 +42,10 @@
 
         /* TÍTULO COM A NOVA FONTE */
         h1 { 
-            font-family: 'Pacifico', cursive; /* Aqui aplica a fonte de "Glacê" */
-            font-size: 38px; /* Aumentei um pouco para destacar a cursiva */
+            font-family: 'Pacifico', cursive;
+            font-size: 38px;
             margin-bottom: 5px;
-            color: #d61c1c; /* Um vermelho levemente diferente para o título */
+            color: #d61c1c;
             font-weight: normal;
         }
 
@@ -64,6 +64,7 @@
             font-weight: bold;
             transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            cursor: pointer; /* Garante que pareça clicável */
         }
 
         /* EFEITO AO PASSAR O MOUSE/TOCAR */
@@ -73,13 +74,25 @@
             background-color: #FAF4EB;
         }
 
-        /* BOTÃO DE DESTAQUE */
+        /* BOTÃO DE DESTAQUE (WHATSAPP) */
         .highlight {
             background-color: #fc1313; 
             color: white;
             border: none;
         }
         .highlight:hover { background-color: #cf6283; color: white; }
+
+        /* --- NOVO: ESTILO DO BOTÃO PIX --- */
+        .btn-pix {
+            background-color: #32BCAD; /* Verde Pix oficial */
+            color: #ffffff;
+            border: none;
+        }
+        .btn-pix:hover, .btn-pix:active { 
+            background-color: #27968a; /* Verde um pouco mais escuro no clique */
+            color: #ffffff;
+            background-color: #27968a !important; /* Força a cor verde no hover */
+        }
 
         /* RODAPÉ */
         footer {
@@ -101,16 +114,16 @@
             📲 Fazer Encomenda (WhatsApp)
         </a>
 
-        <a href="cardapiodenatal.pdf" class="link-btn">
-            🎄🎅🏼 Ver Cardápio Natalino Completo (PDF)
-        </a>
-
-        <a href="https://www.instagram.com/saltydoceria/?__pwa=1" class="link-btn">
-            📸 Siga no Instagram
+        <a href="CÁRDAPIO DE BOLOS SALTY - 202601.pdf" class="link-btn">
+            🎂 Ver Cardápio Completo (PDF)
         </a>
 
         <a href="https://maps.app.goo.gl/BMkzFQLu1YFLKGsw6" class="link-btn">
             📍 Como Chegar (Maps)
+        </a>
+
+        <a href="#" class="link-btn btn-pix" onclick="event.preventDefault(); navigator.clipboard.writeText('82994169255'); alert('✅ Chave Pix Copiada com Sucesso!\n\nCelular: 82994169255\n\nAgora é só abrir o app do seu banco e colar.');">
+             💠 Chave Pix (Copia e Cola)
         </a>
 
         <footer>
@@ -119,9 +132,4 @@
     </div>
 
 </body>
-
 </html>
-
-
-
-
