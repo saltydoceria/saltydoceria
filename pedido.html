@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faça seu Pedido - Salty Doceria</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- ESTILOS GERAIS (Mantendo a identidade) --- */
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #fff0f0; 
+            color: #4A3B32; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px; /* Um pouco mais largo para o formulário */
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        h1 { 
+            font-family: 'Pacifico', cursive;
+            font-size: 36px;
+            color: #d61c1c;
+            text-align: center;
+            margin: 10px 0 20px 0;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #af1919;
+            border-bottom: 2px solid #f8d7d7;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        /* --- ESTILOS DO FORMULÁRIO --- */
+        
+        /* Esconde as bolinhas originais dos Radios/Checkboxes */
+        input[type="radio"], input[type="checkbox"] {
+            display: none;
+        }
+
+        /* Estilo dos botões de seleção */
+        .option-label {
+            display: block;
+            background-color: #fff;
+            color: #4A3B32;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 15px;
+            border: 1px solid #f82121;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Efeito quando selecionado */
+        input[type="radio"]:checked + .option-label,
+        input[type="checkbox"]:checked + .option-label {
+            background-color: #fc1313;
+            color: #fff;
+            border-color: #fc1313;
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(214, 28, 28, 0.3);
+        }
+
+        /* Texto pequeno de detalhe (ex: acréscimo) */
+        .detail-text {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        /* Campo de texto (Nome/Obs) */
+        .input-text {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #f82121;
+            background: #fff;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        /* --- BOX DE INFORMAÇÕES IMPORTANTES --- */
+        .info-box {
+            background-color: #fff8e1; /* Amarelo clarinho */
+            border: 1px dashed #fbc02d;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 30px;
+            color: #5d4037;
+        }
+        .info-box strong { color: #d61c1c; }
+        .info-box ul { padding-left: 20px; margin: 5px 0; }
+
+        /* --- BOTÃO DE ENVIAR --- */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin-top: 25px;
+            background-color: #25D366; /* Verde WhatsApp */
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+        .btn-submit:hover { background-color: #1ebc57; }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .back-link {
+            text-align: center;
+            display: block;
+            margin-top: 15px;
+            color: #d61c1c;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Faça seu Pedido 🍰</h1>
+        
+        <form id="cakeForm">
+            
+            <input type="text" id="nomeCliente" class="input-text" placeholder="Seu Nome Completo" required>
+
+            <h2>1. Escolha o Tamanho</h2>
+            
+            <label>
+                <input type="radio" name="tamanho" value="15 Fatias" data-price="140" onclick="atualizarTotal()">
+                <div class="option-label">
+                    <span>15 Fatias</span>
+                    <span>R$ 140,00</span>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="tamanho" value="25 Fatias" data-price="220" onclick="atualizarTotal()">
+                <div class="option-label">
+                    <span>25 Fatias</span>
+                    <span>R$ 220,00</span>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="tamanho" value="40 Fatias" data-price="260" onclick="atualizarTotal()">
+                <div class="option-label">
+                    <span>40 Fatias</span>
+                    <span>R$ 260,00</span>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="tamanho" value="60 Fatias" data-price="330" onclick="atualizarTotal()">
+                <div class="option-label">
+                    <span>60 Fatias</span>
+                    <span>R$ 330,00</span>
+                </div>
+            </label>
+
+            <h2>2. Escolha a Massa</h2>
+            
+            <label>
+                <input type="radio" name="massa" value="Baunilha">
+                <div class="option-label">Baunilha</div>
+            </label>
+            
+            <label>
+                <input type="radio" name="massa" value="Chocolate">
+                <div class="option-label">Chocolate</div>
+            </label>
+
+            <label>
+                <input type="radio" name="massa" value="Red Velvet">
+                <div class="option-label">
+                    <span>Red Velvet</span>
+                    <span class="detail-text">(Com acréscimo)</span>
+                </div>
+            </label>
+
+            <label>
+                <input type="radio" name="massa" value="Cacau Black">
+                <div class="option-label">
+                    <span>Cacau Black</span>
+                    <span class="detail-text">(Com acréscimo)</span>
+                </div>
+            </label>
+
+            <h2>3. Escolha o(s) Recheio(s)</h2>
+            
+            <label>
+                <input type="checkbox" name="recheio" value="Chocolate">
+                <div class="option-label">Chocolate</div>
+            </label>
+
+            <label>
+                <input type="checkbox" name="recheio" value="Ninho">
+                <div class="option-label">Ninho</div>
+            </label>
+
+            <label>
+                <input type="checkbox" name="recheio" value="Beijinho">
+                <div class="option-label">Beijinho</div>
+            </label>
+
+            <label>
+                <input type="checkbox" name="recheio" value="Maracujá">
+                <div class="option-label">Maracujá</div>
+            </label>
+
+            <label>
+                <input type="checkbox" name="recheio" value="Crocante">
+                <div class="option-label">Crocante</div>
+            </label>
+
+            <div class="info-box">
+                <strong>⚠️ Informações Importantes:</strong>
+                <ul>
+                    <li>Encomendas com <strong>2 dias</strong> de antecedência.</li>
+                    <li><strong>50% de sinal</strong> no ato da encomenda.</li>
+                    <li>Topo de bolo a combinar.</li>
+                    <li>Não fazemos entregas (Retirada no local).</li>
+                    <li>Aceitamos todos os cartões (Parcelamento com juros da maquineta).</li>
+                </ul>
+            </div>
+
+            <button type="button" class="btn-submit" onclick="enviarZap()">
+                Enviar Pedido no WhatsApp <br>
+                <span id="totalDisplay" style="font-size: 0.8em; font-weight: normal;">(Selecione um tamanho)</span>
+            </button>
+
+        </form>
+
+        <a href="#" class="back-link" onclick="history.back()">← Voltar para o menu</a>
+
+        <footer>
+            © 2025 Salty Doceria
+        </footer>
+    </div>
+
+    <script>
+        function atualizarTotal() {
+            const tamanhos = document.getElementsByName('tamanho');
+            let preco = 0;
+            
+            for (let t of tamanhos) {
+                if (t.checked) {
+                    preco = t.getAttribute('data-price');
+                }
+            }
+
+            const display = document.getElementById('totalDisplay');
+            if (preco > 0) {
+                display.innerText = `Valor Base: R$ ${preco},00 (+ extras se houver)`;
+            }
+        }
+
+        function enviarZap() {
+            // 1. Coleta os dados
+            const nome = document.getElementById('nomeCliente').value;
+            
+            // Tamanho
+            const tamanhos = document.getElementsByName('tamanho');
+            let tamanhoSelecionado = "";
+            let precoBase = "";
+            for (let t of tamanhos) {
+                if (t.checked) {
+                    tamanhoSelecionado = t.value;
+                    precoBase = t.getAttribute('data-price');
+                }
+            }
+
+            // Massa
+            const massas = document.getElementsByName('massa');
+            let massaSelecionada = "";
+            for (let m of massas) {
+                if (m.checked) massaSelecionada = m.value;
+            }
+
+            // Recheios (Array)
+            const recheios = document.getElementsByName('recheio');
+            let recheiosSelecionados = [];
+            for (let r of recheios) {
+                if (r.checked) recheiosSelecionados.push(r.value);
+            }
+
+            // 2. Validação simples
+            if (!nome) { alert("Por favor, digite seu nome."); return; }
+            if (!tamanhoSelecionado) { alert("Por favor, selecione um tamanho."); return; }
+            if (!massaSelecionada) { alert("Por favor, selecione a massa."); return; }
+            if (recheiosSelecionados.length === 0) { alert("Selecione pelo menos 1 recheio."); return; }
+
+            // 3. Monta a mensagem
+            let msg = `*NOVO PEDIDO - SALTY DOCERIA* 🍰\n\n`;
+            msg += `👤 *Cliente:* ${nome}\n`;
+            msg += `🎂 *Tamanho:* ${tamanhoSelecionado} (R$${precoBase},00)\n`;
+            msg += `🥣 *Massa:* ${massaSelecionada}\n`;
+            msg += `🍫 *Recheios:* ${recheiosSelecionados.join(', ')}\n\n`;
+            msg += `------------------------------\n`;
+            msg += `*Observações:* Aguardo confirmação do valor total (incluindo extras e topo) e dados para o sinal de 50%.`;
+
+            // 4. Envia para o WhatsApp (Codifica a URL)
+            // IMPORTANTE: Substitua o número abaixo pelo seu
+            const numeroWhatsApp = "5582994169255"; 
+            
+            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(msg)}`;
+            
+            window.open(url, '_blank');
+        }
+    </script>
+</body>
+</html>
