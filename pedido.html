@@ -2,21 +2,22 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faça seu Pedido - Salty Doceria</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fazer Pedido - Salty Doceria</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
 
     <style>
-        /* --- ESTILOS GERAIS (Mantendo a identidade) --- */
+        /* --- ESTILOS GERAIS --- */
         body {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background-color: #fff0f0; 
             color: #4A3B32; 
             margin: 0;
             padding: 0;
+            padding-bottom: 110px; /* Espaço para o carrinho flutuante */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -25,119 +26,202 @@
 
         .container {
             width: 100%;
-            max-width: 450px; /* Um pouco mais largo para o formulário */
-            padding: 30px 20px;
+            max-width: 500px;
+            padding: 20px;
             box-sizing: border-box;
         }
 
         h1 { 
             font-family: 'Pacifico', cursive;
-            font-size: 36px;
+            font-size: 32px;
             color: #d61c1c;
             text-align: center;
             margin: 10px 0 20px 0;
         }
 
+        /* --- ABAS (TABS) --- */
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #fff0f0;
+            padding: 10px 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 5px;
+            background-color: #fff;
+            border: 1px solid #f82121;
+            border-radius: 10px;
+            color: #af1919;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            background-color: #d61c1c;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- INPUTS --- */
         h2 {
             font-size: 18px;
             color: #af1919;
             border-bottom: 2px solid #f8d7d7;
             padding-bottom: 5px;
-            margin-top: 25px;
-            margin-bottom: 15px;
+            margin-top: 15px;
         }
 
-        /* --- ESTILOS DO FORMULÁRIO --- */
-        
-        /* Esconde as bolinhas originais dos Radios/Checkboxes */
-        input[type="radio"], input[type="checkbox"] {
-            display: none;
-        }
-
-        /* Estilo dos botões de seleção */
-        .option-label {
-            display: block;
-            background-color: #fff;
-            color: #4A3B32;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 15px;
-            border: 1px solid #f82121;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Efeito quando selecionado */
-        input[type="radio"]:checked + .option-label,
-        input[type="checkbox"]:checked + .option-label {
-            background-color: #fc1313;
-            color: #fff;
-            border-color: #fc1313;
-            transform: scale(1.02);
-            box-shadow: 0 4px 8px rgba(214, 28, 28, 0.3);
-        }
-
-        /* Texto pequeno de detalhe (ex: acréscimo) */
-        .detail-text {
-            font-size: 0.85em;
-            opacity: 0.9;
-        }
-
-        /* Campo de texto (Nome/Obs) */
-        .input-text {
+        .input-text, .input-area {
             width: 100%;
             padding: 15px;
             border-radius: 15px;
             border: 1px solid #f82121;
             background: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             box-sizing: border-box;
-            font-family: inherit;
+            font-size: 16px;
+        }
+        .input-area { height: 80px; resize: vertical; }
+
+        /* --- ITEM CARD COM CONTADOR --- */
+        .item-card {
+            background-color: #fff;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border: 1px solid #fbdbdb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
         }
 
-        /* --- BOX DE INFORMAÇÕES IMPORTANTES --- */
+        /* Destaque quando selecionado */
+        .item-card.selected {
+            border: 1px solid #d61c1c;
+            background-color: #fffdfd;
+            box-shadow: 0 2px 5px rgba(214, 28, 28, 0.1);
+        }
+
+        .item-info { flex: 1; padding-right: 10px; }
+        .item-title { font-weight: bold; color: #4A3B32; display: block; font-size: 15px; }
+        .item-desc { font-size: 12px; color: #888; display: block; margin-top: 2px; }
+        .item-price { font-weight: bold; color: #d61c1c; font-size: 14px; }
+
+        /* CONTROLES + / - */
+        .qtd-controls {
+            display: flex;
+            align-items: center;
+            background-color: #fff0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #f8d7d7;
+            min-width: 100px;
+            justify-content: space-between;
+        }
+
+        .btn-qtd {
+            width: 35px;
+            height: 35px;
+            background-color: transparent;
+            border: none;
+            color: #d61c1c;
+            font-weight: bold;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Importante para não selecionar texto rápido */
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        .btn-qtd:active { background-color: #ffcccc; }
+
+        .qtd-display {
+            width: 30px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #4A3B32;
+        }
+
+        /* --- RADIOS E CHECKBOXES (Para Bolo) --- */
+        .radio-label { display: block; cursor: pointer; }
+        input[type="radio"], input[type="checkbox"] { display: none; }
+        
+        .radio-card {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border: 1px solid #fbdbdb;
+            transition: 0.2s;
+        }
+        input:checked + .radio-card {
+            background-color: #fff5f5;
+            border: 1px solid #d61c1c;
+            color: #d61c1c;
+            font-weight: bold;
+        }
+
+        /* --- CARRINHO FLUTUANTE --- */
+        .floating-cart {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            border-top: 1px solid #eee;
+        }
+
+        .cart-total { font-size: 13px; color: #666; }
+        .cart-price { font-size: 20px; font-weight: bold; color: #25D366; }
+
+        .btn-submit {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
         .info-box {
-            background-color: #fff8e1; /* Amarelo clarinho */
+            background-color: #fff8e1;
             border: 1px dashed #fbc02d;
             padding: 15px;
             border-radius: 15px;
             font-size: 13px;
-            line-height: 1.6;
-            margin-top: 30px;
+            margin-top: 20px;
             color: #5d4037;
-        }
-        .info-box strong { color: #d61c1c; }
-        .info-box ul { padding-left: 20px; margin: 5px 0; }
-
-        /* --- BOTÃO DE ENVIAR --- */
-        .btn-submit {
-            display: block;
-            width: 100%;
-            padding: 18px;
-            margin-top: 25px;
-            background-color: #25D366; /* Verde WhatsApp */
-            color: white;
-            text-align: center;
-            border: none;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: background 0.2s;
-        }
-        .btn-submit:hover { background-color: #1ebc57; }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            opacity: 0.7;
         }
 
         .back-link {
@@ -146,201 +230,371 @@
             margin-top: 15px;
             color: #d61c1c;
             text-decoration: none;
-            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Faça seu Pedido 🍰</h1>
-        
-        <form id="cakeForm">
-            
-            <input type="text" id="nomeCliente" class="input-text" placeholder="Seu Nome Completo" required>
+        <h1>Faça seu Pedido 📝</h1>
+        <input type="text" id="nomeCliente" class="input-text" placeholder="Seu Nome Completo" required>
 
-            <h2>1. Escolha o Tamanho</h2>
-            
-            <label>
-                <input type="radio" name="tamanho" value="15 Fatias" data-price="140" onclick="atualizarTotal()">
-                <div class="option-label">
-                    <span>15 Fatias</span>
-                    <span>R$ 140,00</span>
+        <div class="tabs">
+            <button type="button" class="tab-btn active" onclick="openTab('bolos')">🎂 Bolos</button>
+            <button type="button" class="tab-btn" onclick="openTab('salgados')">🥟 Salgados</button>
+            <button type="button" class="tab-btn" onclick="openTab('kits')">🎉 Kits</button>
+        </div>
+
+        <form id="orderForm">
+
+            <div id="bolos" class="tab-content active">
+                <h2>1. Tamanho do Bolo</h2>
+                <label class="radio-label"><input type="radio" name="bolo_tamanho" value="15 Fatias" data-price="140" onchange="calcTotal()"><div class="radio-card">15 Fatias (R$ 140,00)</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_tamanho" value="25 Fatias" data-price="220" onchange="calcTotal()"><div class="radio-card">25 Fatias (R$ 220,00)</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_tamanho" value="40 Fatias" data-price="260" onchange="calcTotal()"><div class="radio-card">40 Fatias (R$ 260,00)</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_tamanho" value="60 Fatias" data-price="330" onchange="calcTotal()"><div class="radio-card">60 Fatias (R$ 330,00)</div></label>
+
+                <h2>2. Massa</h2>
+                <label class="radio-label"><input type="radio" name="bolo_massa" value="Baunilha"><div class="radio-card">Baunilha</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_massa" value="Chocolate"><div class="radio-card">Chocolate</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_massa" value="Red Velvet"><div class="radio-card">Red Velvet (Com acréscimo)</div></label>
+                <label class="radio-label"><input type="radio" name="bolo_massa" value="Cacau Black"><div class="radio-card">Cacau Black (Com acréscimo)</div></label>
+
+                <h2>3. Recheios</h2>
+                <div style="font-size:12px; margin-bottom:10px; color:#888;">(Selecione os desejados)</div>
+                <label class="radio-label"><input type="checkbox" name="bolo_recheio" value="Chocolate"><div class="radio-card">Chocolate</div></label>
+                <label class="radio-label"><input type="checkbox" name="bolo_recheio" value="Ninho"><div class="radio-card">Ninho</div></label>
+                <label class="radio-label"><input type="checkbox" name="bolo_recheio" value="Beijinho"><div class="radio-card">Beijinho</div></label>
+                <label class="radio-label"><input type="checkbox" name="bolo_recheio" value="Maracujá"><div class="radio-card">Maracujá</div></label>
+                <label class="radio-label"><input type="checkbox" name="bolo_recheio" value="Crocante"><div class="radio-card">Crocante</div></label>
+
+                <div style="margin-top: 20px; padding: 10px; background: white; border-radius: 10px; border: 1px solid #fbdbdb;">
+                    <span style="font-size: 14px; font-weight: bold;">Quantidade deste bolo:</span>
+                    <div class="qtd-controls" style="float: right;">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('bolo', -1)">-</button>
+                        <span id="qtd_bolo" class="qtd-display">1</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('bolo', 1)">+</button>
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
-            </label>
-
-            <label>
-                <input type="radio" name="tamanho" value="25 Fatias" data-price="220" onclick="atualizarTotal()">
-                <div class="option-label">
-                    <span>25 Fatias</span>
-                    <span>R$ 220,00</span>
-                </div>
-            </label>
-
-            <label>
-                <input type="radio" name="tamanho" value="40 Fatias" data-price="260" onclick="atualizarTotal()">
-                <div class="option-label">
-                    <span>40 Fatias</span>
-                    <span>R$ 260,00</span>
-                </div>
-            </label>
-
-            <label>
-                <input type="radio" name="tamanho" value="60 Fatias" data-price="330" onclick="atualizarTotal()">
-                <div class="option-label">
-                    <span>60 Fatias</span>
-                    <span>R$ 330,00</span>
-                </div>
-            </label>
-
-            <h2>2. Escolha a Massa</h2>
-            
-            <label>
-                <input type="radio" name="massa" value="Baunilha">
-                <div class="option-label">Baunilha</div>
-            </label>
-            
-            <label>
-                <input type="radio" name="massa" value="Chocolate">
-                <div class="option-label">Chocolate</div>
-            </label>
-
-            <label>
-                <input type="radio" name="massa" value="Red Velvet">
-                <div class="option-label">
-                    <span>Red Velvet</span>
-                    <span class="detail-text">(Com acréscimo)</span>
-                </div>
-            </label>
-
-            <label>
-                <input type="radio" name="massa" value="Cacau Black">
-                <div class="option-label">
-                    <span>Cacau Black</span>
-                    <span class="detail-text">(Com acréscimo)</span>
-                </div>
-            </label>
-
-            <h2>3. Escolha o(s) Recheio(s)</h2>
-            
-            <label>
-                <input type="checkbox" name="recheio" value="Chocolate">
-                <div class="option-label">Chocolate</div>
-            </label>
-
-            <label>
-                <input type="checkbox" name="recheio" value="Ninho">
-                <div class="option-label">Ninho</div>
-            </label>
-
-            <label>
-                <input type="checkbox" name="recheio" value="Beijinho">
-                <div class="option-label">Beijinho</div>
-            </label>
-
-            <label>
-                <input type="checkbox" name="recheio" value="Maracujá">
-                <div class="option-label">Maracujá</div>
-            </label>
-
-            <label>
-                <input type="checkbox" name="recheio" value="Crocante">
-                <div class="option-label">Crocante</div>
-            </label>
-
-            <div class="info-box">
-                <strong>⚠️ Informações Importantes:</strong>
-                <ul>
-                    <li>Encomendas com <strong>2 dias</strong> de antecedência.</li>
-                    <li><strong>50% de sinal</strong> no ato da encomenda.</li>
-                    <li>Topo de bolo a combinar.</li>
-                    <li>Não fazemos entregas (Retirada no local).</li>
-                    <li>Aceitamos todos os cartões (Parcelamento com juros da maquineta).</li>
-                </ul>
             </div>
 
-            <button type="button" class="btn-submit" onclick="enviarZap()">
-                Enviar Pedido no WhatsApp <br>
-                <span id="totalDisplay" style="font-size: 0.8em; font-weight: normal;">(Selecione um tamanho)</span>
-            </button>
+            <div id="salgados" class="tab-content">
+                <h2>Salgados (Cento)</h2>
+                <p style="font-size:12px; color:#666; margin-bottom: 15px;">Use os botões para adicionar.</p>
 
+                <div class="item-card" id="card_coxinha">
+                    <div class="item-info"><span class="item-title">Coxinha</span><span class="item-price">R$ 90,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('coxinha', -1)">-</button>
+                        <span id="qtd_coxinha" class="qtd-display" data-name="Coxinha" data-price="90">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('coxinha', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_risole">
+                    <div class="item-info"><span class="item-title">Risole</span><span class="item-price">R$ 90,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('risole', -1)">-</button>
+                        <span id="qtd_risole" class="qtd-display" data-name="Risole" data-price="90">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('risole', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_bolinho">
+                    <div class="item-info"><span class="item-title">Bolinho de Queijo</span><span class="item-price">R$ 90,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('bolinho', -1)">-</button>
+                        <span id="qtd_bolinho" class="qtd-display" data-name="Bolinho Queijo" data-price="90">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('bolinho', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_tortelete">
+                    <div class="item-info"><span class="item-title">Tortelete</span><span class="item-price">R$ 90,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('tortelete', -1)">-</button>
+                        <span id="qtd_tortelete" class="qtd-display" data-name="Tortelete" data-price="90">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('tortelete', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_croquete">
+                    <div class="item-info"><span class="item-title">Croquete de Charque</span><span class="item-price">R$ 120,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('croquete', -1)">-</button>
+                        <span id="qtd_croquete" class="qtd-display" data-name="Croq. Charque" data-price="120">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('croquete', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_empadaf">
+                    <div class="item-info"><span class="item-title">Empada de Frango</span><span class="item-price">R$ 120,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('empadaf', -1)">-</button>
+                        <span id="qtd_empadaf" class="qtd-display" data-name="Empada Frango" data-price="120">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('empadaf', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_pastel">
+                    <div class="item-info"><span class="item-title">Pastel de Forno</span><span class="item-price">R$ 120,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('pastel', -1)">-</button>
+                        <span id="qtd_pastel" class="qtd-display" data-name="Pastel Forno" data-price="120">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('pastel', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_empadacs">
+                    <div class="item-info"><span class="item-title">Empada Carne de Sol</span><span class="item-price">R$ 140,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('empadacs', -1)">-</button>
+                        <span id="qtd_empadacs" class="qtd-display" data-name="Empada C.Sol" data-price="140">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('empadacs', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_canudinho">
+                    <div class="item-info"><span class="item-title">Canudinho de Frango</span><span class="item-price">R$ 150,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('canudinho', -1)">-</button>
+                        <span id="qtd_canudinho" class="qtd-display" data-name="Canudinho" data-price="150">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('canudinho', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_quichef">
+                    <div class="item-info"><span class="item-title">Quiche de Frango</span><span class="item-price">R$ 150,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('quichef', -1)">-</button>
+                        <span id="qtd_quichef" class="qtd-display" data-name="Quiche Frango" data-price="150">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('quichef', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_quichecs">
+                    <div class="item-info"><span class="item-title">Quiche Carne de Sol</span><span class="item-price">R$ 170,00</span></div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('quichecs', -1)">-</button>
+                        <span id="qtd_quichecs" class="qtd-display" data-name="Quiche C.Sol" data-price="170">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('quichecs', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kits" class="tab-content">
+                <h2>Kits Festa</h2>
+                
+                <div class="item-card" id="card_kit15">
+                    <div class="item-info">
+                        <span class="item-title">Kit 15 Pessoas</span>
+                        <span class="item-desc">Bolo 15cm + 50 doces + 50 salgados</span>
+                        <span class="item-price">R$ 240,00</span>
+                    </div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit15', -1)">-</button>
+                        <span id="qtd_kit15" class="qtd-display" data-name="Kit 15 Pessoas" data-price="240">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit15', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_kit20">
+                    <div class="item-info">
+                        <span class="item-title">Kit 20-30 Pessoas</span>
+                        <span class="item-desc">Bolo 20cm + 100 doces + 100 salgados</span>
+                        <span class="item-price">R$ 400,00</span>
+                    </div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit20', -1)">-</button>
+                        <span id="qtd_kit20" class="qtd-display" data-name="Kit 20-30 Pessoas" data-price="400">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit20', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_kit30">
+                    <div class="item-info">
+                        <span class="item-title">Kit 30-40 Pessoas</span>
+                        <span class="item-desc">Bolo 25cm + 100 doces + 150 salgados</span>
+                        <span class="item-price">R$ 500,00</span>
+                    </div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit30', -1)">-</button>
+                        <span id="qtd_kit30" class="qtd-display" data-name="Kit 30-40 Pessoas" data-price="500">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit30', 1)">+</button>
+                    </div>
+                </div>
+
+                <div class="item-card" id="card_kit40">
+                    <div class="item-info">
+                        <span class="item-title">Kit 40-50 Pessoas</span>
+                        <span class="item-desc">Bolo 30cm + 150 doces + 200 salgados</span>
+                        <span class="item-price">R$ 700,00</span>
+                    </div>
+                    <div class="qtd-controls">
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit40', -1)">-</button>
+                        <span id="qtd_kit40" class="qtd-display" data-name="Kit 40-50 Pessoas" data-price="700">0</span>
+                        <button type="button" class="btn-qtd" onclick="alterarQtd('kit40', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Observações (Opcional)</h2>
+            <textarea id="observacoes" class="input-area" placeholder="Ex: Bolo sem lactose, retirar cebola da empada..."></textarea>
+
+            <div class="info-box">
+                <strong>⚠️ Importante:</strong>
+                <ul>
+                    <li>Encomendas com <strong>3 dias</strong> de antecedência.</li>
+                    <li>Pagamento de <strong>50%</strong> no ato.</li>
+                    <li>Não fazemos entregas.</li>
+                </ul>
+            </div>
+            
+            <a href="#" class="back-link" onclick="history.back()">← Voltar ao início</a>
         </form>
 
-        <a href="#" class="back-link" onclick="history.back()">← Voltar para o menu</a>
+    </div>
 
-        <footer>
-            © 2025 Salty Doceria
-        </footer>
+    <div class="floating-cart">
+        <div class="cart-total">
+            Total Estimado:<br>
+            <span class="cart-price" id="totalValue">R$ 0,00</span>
+        </div>
+        <button type="button" class="btn-submit" onclick="enviarPedido()">
+            Enviar Pedido 📲
+        </button>
     </div>
 
     <script>
-        function atualizarTotal() {
-            const tamanhos = document.getElementsByName('tamanho');
-            let preco = 0;
-            
-            for (let t of tamanhos) {
-                if (t.checked) {
-                    preco = t.getAttribute('data-price');
-                }
-            }
-
-            const display = document.getElementById('totalDisplay');
-            if (preco > 0) {
-                display.innerText = `Valor Base: R$ ${preco},00 (+ extras se houver)`;
-            }
+        // --- FUNÇÃO ABAS ---
+        function openTab(tabName) {
+            var contents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < contents.length; i++) contents[i].style.display = "none";
+            var btns = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+            document.getElementById(tabName).style.display = "block";
+            event.target.classList.add("active");
         }
 
-        function enviarZap() {
-            // 1. Coleta os dados
-            const nome = document.getElementById('nomeCliente').value;
+        // --- FUNÇÃO DE CONTADOR (Corrigida) ---
+        function alterarQtd(itemKey, valor) {
+            // Reconstrói os IDs corretos
+            const spanId = 'qtd_' + itemKey;
+            const cardId = 'card_' + itemKey;
+
+            const span = document.getElementById(spanId);
+            if (!span) return; // Segurança
+
+            let qtd = parseInt(span.innerText);
+            qtd += valor;
+            if (qtd < 0) qtd = 0; // Não deixa negativo
             
-            // Tamanho
-            const tamanhos = document.getElementsByName('tamanho');
-            let tamanhoSelecionado = "";
-            let precoBase = "";
-            for (let t of tamanhos) {
-                if (t.checked) {
-                    tamanhoSelecionado = t.value;
-                    precoBase = t.getAttribute('data-price');
+            // Regra especial pro bolo (mínimo 1)
+            if (itemKey === 'bolo' && qtd < 1) qtd = 1;
+
+            span.innerText = qtd;
+
+            // Highlight visual no card (se existir card correspondente)
+            const card = document.getElementById(cardId);
+            if(card) {
+                if (qtd > 0) card.classList.add('selected');
+                else card.classList.remove('selected');
+            }
+
+            calcTotal();
+        }
+
+        // --- CALCULAR TOTAL ---
+        function calcTotal() {
+            let total = 0;
+
+            // 1. Total Bolos
+            const boloTam = document.querySelector('input[name="bolo_tamanho"]:checked');
+            if (boloTam) {
+                let precoBolo = parseFloat(boloTam.getAttribute('data-price'));
+                let qtdBolo = parseInt(document.getElementById('qtd_bolo').innerText);
+                total += (precoBolo * qtdBolo);
+            }
+
+            // 2. Total Salgados e Kits
+            const spans = document.querySelectorAll('.qtd-display');
+            spans.forEach(span => {
+                if (span.id !== 'qtd_bolo') {
+                    let p = parseFloat(span.getAttribute('data-price'));
+                    let q = parseInt(span.innerText);
+                    if (!isNaN(p) && !isNaN(q)) {
+                        total += (p * q);
+                    }
                 }
+            });
+
+            document.getElementById('totalValue').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // --- ENVIAR PEDIDO ---
+        function enviarPedido() {
+            const nome = document.getElementById('nomeCliente').value;
+            const obs = document.getElementById('observacoes').value;
+            const totalTexto = document.getElementById('totalValue').innerText;
+
+            if (!nome) { alert("Por favor, digite seu nome no topo."); return; }
+
+            // Verifica se tem itens
+            let temItens = false;
+            // Verifica Bolo
+            if (document.querySelector('input[name="bolo_tamanho"]:checked')) temItens = true;
+            // Verifica contadores
+            const spans = document.querySelectorAll('.qtd-display');
+            spans.forEach(s => { 
+                if(s.id !== 'qtd_bolo' && parseInt(s.innerText) > 0) temItens = true; 
+            });
+
+            if (!temItens) { alert("Selecione algum item ou kit para continuar."); return; }
+
+            // Monta msg
+            let msg = `*NOVO PEDIDO - SALTY DOCERIA* 📝\n`;
+            msg += `👤 *Cliente:* ${nome}\n\n`;
+
+            // -- BOLO --
+            const boloTam = document.querySelector('input[name="bolo_tamanho"]:checked');
+            if (boloTam) {
+                let qtdBolo = document.getElementById('qtd_bolo').innerText;
+                const boloMassa = document.querySelector('input[name="bolo_massa"]:checked');
+                const boloRecheios = Array.from(document.querySelectorAll('input[name="bolo_recheio"]:checked')).map(el => el.value);
+                
+                msg += `🎂 *BOLO (${qtdBolo}un):*\n`;
+                msg += `- Tamanho: ${boloTam.value}\n`;
+                if(boloMassa) msg += `- Massa: ${boloMassa.value}\n`;
+                if(boloRecheios.length) msg += `- Recheios: ${boloRecheios.join(', ')}\n`;
+                msg += `\n`;
             }
 
-            // Massa
-            const massas = document.getElementsByName('massa');
-            let massaSelecionada = "";
-            for (let m of massas) {
-                if (m.checked) massaSelecionada = m.value;
+            // -- SALGADOS E KITS --
+            let listItems = "";
+            spans.forEach(span => {
+                let q = parseInt(span.innerText);
+                if (q > 0 && span.id !== 'qtd_bolo') {
+                    let nomeItem = span.getAttribute('data-name');
+                    listItems += `🔹 ${q}x ${nomeItem}\n`;
+                }
+            });
+
+            if (listItems !== "") {
+                msg += `📦 *ITENS ADICIONADOS:*\n${listItems}\n`;
             }
 
-            // Recheios (Array)
-            const recheios = document.getElementsByName('recheio');
-            let recheiosSelecionados = [];
-            for (let r of recheios) {
-                if (r.checked) recheiosSelecionados.push(r.value);
+            if (obs) {
+                msg += `\n📝 *OBSERVAÇÕES:*\n${obs}\n`;
             }
 
-            // 2. Validação simples
-            if (!nome) { alert("Por favor, digite seu nome."); return; }
-            if (!tamanhoSelecionado) { alert("Por favor, selecione um tamanho."); return; }
-            if (!massaSelecionada) { alert("Por favor, selecione a massa."); return; }
-            if (recheiosSelecionados.length === 0) { alert("Selecione pelo menos 1 recheio."); return; }
-
-            // 3. Monta a mensagem
-            let msg = `*NOVO PEDIDO - SALTY DOCERIA* 🍰\n\n`;
-            msg += `👤 *Cliente:* ${nome}\n`;
-            msg += `🎂 *Tamanho:* ${tamanhoSelecionado} (R$${precoBase},00)\n`;
-            msg += `🥣 *Massa:* ${massaSelecionada}\n`;
-            msg += `🍫 *Recheios:* ${recheiosSelecionados.join(', ')}\n\n`;
             msg += `------------------------------\n`;
-            msg += `*Observações:* Aguardo confirmação do valor total (incluindo extras e topo) e dados para o sinal de 50%.`;
+            msg += `💰 *TOTAL ESTIMADO: ${totalTexto}*\n`;
+            msg += `_(Valor sujeito a alteração caso haja extras)_\n\n`;
+            msg += `Estou ciente do prazo de 3 dias e sinal de 50%.`;
 
-            // 4. Envia para o WhatsApp (Codifica a URL)
-            // IMPORTANTE: Substitua o número abaixo pelo seu
-            const numeroWhatsApp = "5582994169255"; 
-            
-            const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(msg)}`;
-            
-            window.open(url, '_blank');
+            const fone = "5582994169255"; 
+            window.open(`https://wa.me/${fone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
     </script>
 </body>
